@@ -76,7 +76,13 @@ StackJS includes:
 TODO:
 ======
 
+ - Rename StackJS to something else. Ideas?
+
  - Your feature here!
+
+ - Do some marketing stuff for RC1:
+    - website
+    - documentation
 
  - Sass integration?
 
