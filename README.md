@@ -3,6 +3,7 @@ What is StackJS:
 ======
 
 StackJS is a combination of libraries to help us:
+
 1. Glue together all kind of jQuery plugins, w/ flexible features as: default settings, per environment settings,
     per instance settings and per DOM Node settings (using data-* attributes)
 
