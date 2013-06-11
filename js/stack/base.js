@@ -53,6 +53,10 @@ window.Stack = window.Stack || {};
             return this;
         },
         'option': function(name, default_value) {
+            if(name == undefined) {
+                return $.extend({}, this.options);
+            }
+
             if(!this.options[name]) {
                 return default_value;
             } else {
