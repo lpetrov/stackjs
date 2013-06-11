@@ -25,7 +25,20 @@
                 def_value = env;
                 env = this._env;
             }
-            return this._data[env][key] != undefined ? this._data[env][key] : def_value;
+
+            var arr = key.split('.');
+            var result = this._data[env];
+
+            for(var i = 0; i < arr.length; i++){
+                if(result)
+                    result = result[arr[i]];
+            }
+
+            if(!result) {
+                return def_value;
+            } else {
+                return result;
+            }
         },
         'bootstrap':function(config_data) {
             if(
