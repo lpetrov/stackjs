@@ -15,14 +15,6 @@
             'overflow_body_when_in_iframe': true,
             'scroll_on_reload': true
         },
-        'init': function() {
-            this._super();
-
-            /**
-             * We can later attach other plugins that are related to FB to this event (jQuery Custom Events)
-             */
-            $(this).on('fb_loaded', this.on_fb_loaded);
-        },
         /**
          * Bootstraps Stack.Facebook.
          * Loads FB in Async mode.
@@ -31,9 +23,8 @@
          *
          * @param options
          */
-        'bootstrap': function(options) {
-            Stack.BaseComponent.prototype.bootstrap.call(this, options);
-
+        'init': function(options) {
+            this._super(options);
 
             console.debug("Facebook: Initializing with configuration", this.options);
 
@@ -77,7 +68,15 @@
 
 
             this.inject_fb_js();
+
+            /**
+             * We can later attach other plugins that are related to FB to this event (jQuery Custom Events)
+             */
+            $(this).on('fb_loaded', this.on_fb_loaded);
+
+            return this;
         },
+
         /**
          * Load FB in async mode. Auto called by the bootstrap() method
          */

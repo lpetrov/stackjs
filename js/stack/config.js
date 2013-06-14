@@ -4,48 +4,20 @@
  * User: lyubomirpetrov
  */
 
+window.Stack = window.Stack || {};
+
 (function(Stack, $, undefined) {
-
-    var Config = Stack.BaseComponent.extend({
+    var Config = Class.extend({
         'init': function() {
-            this._super();
-
             this._data = false;
             this._env = "dev"; //default environment
         },
-        '_ensure_data_is_loaded': function() {
-            if(this._data === false) {
-                throw new Error("Config not loaded. Stopping execution.");
-            }
-        },
-        'get': function(key, env, def_value) {
-            this._ensure_data_is_loaded();
-
-            if(def_value == undefined) { // only 2 args? second is def value, and def env is assumed.
-                def_value = env;
-                env = this._env;
-            }
-
-            var arr = key.split('.');
-            var result = this._data[env];
-
-            for(var i = 0; i < arr.length; i++){
-                if(result)
-                    result = result[arr[i]];
-            }
-
-            if(!result) {
-                return def_value;
-            } else {
-                return result;
-            }
-        },
-        'bootstrap':function(config_data) {
+        'bootstrap': function(config_data) {
             if(
                 typeof(config_data['environments']) == 'undefined' ||
                     typeof(config_data['environments']['order']) == "undefined"
                 ) {
-                throw new Exception("Missing 'environments' def in the config.");
+                throw new Error("Missing 'environments' def in the config.");
             }
             var last_env = null;
             jQuery.each(config_data['environments']['order'], function(v, k) {
@@ -68,6 +40,29 @@
 
             this.detect_environment();
         },
+        '_ensure_data_is_loaded': function() {
+            if(this._data === false) {
+                throw new Error("Config not loaded. Stopping execution.");
+            }
+        },
+        'get': function(key, env, def_value) {
+//            this._ensure_data_is_loaded();
+
+            if(def_value == undefined) { // only 2 args? second is def value, and def env is assumed.
+                def_value = env;
+                env = this._env;
+            }
+
+
+
+            result = get_value_from_array_path(this._data[env], key);
+
+            if(!result) {
+                return def_value;
+            } else {
+                return result;
+            }
+        },
         'detect_environment': function() {
 
             this._ensure_data_is_loaded();
@@ -87,8 +82,7 @@
                 return !do_break; // closure break..jquery's .each magic :(
             });
         }
-
     });
 
-    Stack.Config = new Config(); // init
+    Stack.Config = new Config(); // dont init
 })(window.Stack, jQuery, undefined);
