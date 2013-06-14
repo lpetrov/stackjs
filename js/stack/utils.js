@@ -31,6 +31,16 @@ String.prototype.pxToInt = function() {
     return new Number(this.replace("px", ""));
 }
 
+Object.values = function (obj) {
+    var vals = [];
+    for( var key in obj ) {
+        if ( obj.hasOwnProperty(key) ) {
+            vals.push(obj[key]);
+        }
+    }
+    return vals;
+}
+
 function get_value_from_array_path(data, key) {
     var arr = key.split('.');
     var result = data;

@@ -20,8 +20,10 @@
                 'datetime'
             ],
             'filters':{},
-            'enabled': true
+            'enabled': true,
+            'events-enabled': true
         },
+        'events': Object.values(LOG_LEVELS),
         'init': function(options) {
             this._super(options);
 
@@ -79,6 +81,14 @@
                 return;
             }
 
+            if(self.option('events-enabled', false) == true) {
+                var event = jQuery.Event("logger:" + log_level);
+                self.trigger(event, [args]);
+                if (event.isDefaultPrevented()) {
+                    return;
+                }
+            }
+
             console[log_level].apply(console, args);
         },
         'plugin_datetime': function(args) {
@@ -90,21 +100,10 @@
         'plugin_caller': function(args) {
             var caller = "";
             if(printStackTrace != undefined) {
-                var stack = printStackTrace();
-                var found_stack = "";
-
-                stack.forEach(function(v, k) {
-                    /**
-                     * Hardcoding strings is not a good idea, but ... maybe I can find a better solution some day.
-                     */
-                    if(v.indexOf("Class.Stack.BaseComponent.extend.log") > -1) {
-                        found_stack = stack[k+1];
-                        if(found_stack.indexOf("Class.Stack.BaseComponent.extend.init.Object.keys.forEach.self") > -1) {
-                            found_stack = stack[k+2];
-                        }
-                        return false;
-                    }
+                var stack = printStackTrace({
+                    guess: true
                 });
+                var found_stack = stack[stack.length - 2];
                 caller = found_stack.replace(/^\s+at\s+/, "");
             } else {
                 caller = arguments.callee.caller.name;
@@ -115,11 +114,10 @@
 
             return [caller].concat(args);
         }
-
     });
 
 
 
 
-    Stack.Logger = Logger; // init
+    Stack.Logger = Logger; // expose
 })(window.Stack);

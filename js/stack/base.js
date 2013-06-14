@@ -36,6 +36,30 @@ window.Stack = window.Stack || {};
             } else {
                 return result;
             }
+        },
+        'bind': function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args[0] = this.name + ":" + args[0];
+            return $(this).bind.apply($(this), args);
+        },
+        'trigger': function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            if(args[0] instanceof jQuery.Event) {
+                // pass
+            } else {
+                args[0] = this.name + ":" + args[0];
+            }
+            return $(this).trigger.apply($(this), args);
+        },
+        'unbind': function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args[0] = this.name + ":" + args[0];
+            return $(this).unbind.apply($(this), args);
+        },
+        'one': function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args[0] = this.name + ":" + args[0];
+            return $(this).one.apply($(this), args);
         }
     });
 
