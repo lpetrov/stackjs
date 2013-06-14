@@ -46,6 +46,8 @@ StackJS includes:
 
  - Flexible JS config system that support different environments, depending on the current domain name
 
+ - Flexible Logging for JavaScript - at last! :)
+
  - << END OF TOP FEATURES
 
  - Fork of HTML5 Bootstrap
@@ -100,7 +102,8 @@ TODO:
  - Write tests?
     - open question: which testing framework should we use?
 
- - Some day, we should find a proper package manager to use to distribute StackJS
+ - Some day, we should find a proper package manager to use to distribute StackJS:
+    - possible candidate: bower
 
  - Less integration - impl. watch mode (1.3.1 have issues with #!watch, so we will need to wait for bugfix)
 
