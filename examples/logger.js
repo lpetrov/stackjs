@@ -1,3 +1,15 @@
+/**
+ * Example: Stack.Logger
+ *
+ * Output:
+ *   Bootstraping component 'logger' w/ runtime configuration:
+ *   Object {plugins: Array[2], filters: Object, enabled: true}
+ *   and runtime opts: Object {} base.js:25
+ *   [2013-6-14 23:47:17] [example (file:///Users/lpetrov/workspace/stack/examples/logger.js:46:16)] Hi there. logger.js:82
+ *   [2013-6-14 23:47:17] [example (file:///Users/lpetrov/workspace/stack/examples/logger.js:48:20)] This is THE logger. logger.js:82
+ *   [2013-6-14 23:47:17] [example2 (file:///Users/lpetrov/workspace/stack/examples/logger.js:53:16)] It's main goal is to help you debug your applications in development mode. logger.js:82
+ *   [2013-6-14 23:47:17] [file:///Users/lpetrov/workspace/stack/examples/logger.js:59:16] (try to log something from anonymous func.)
+ */
 (function(Stack) {
     var config = {
         /**
