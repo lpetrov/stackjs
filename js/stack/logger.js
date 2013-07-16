@@ -9,7 +9,8 @@
         'E_ERROR': 'error',
         'E_INFO': 'info',
         'E_DEBUG': 'debug',
-        'E_WARN': 'warn'
+        'E_WARN': 'warn',
+        'E_DIR': 'dir'
     };
 
     var Logger = Stack.BaseComponent.extend({
@@ -19,15 +20,22 @@
                 'caller',
                 'datetime'
             ],
+            'logger': null,
             'filters':{},
             'enabled': true,
-            'events-enabled': true
+            'events-enabled': true,
+
+            /**
+             * This will patch the window.console with an instance of the logger. Watch out, use this only in emergency.
+             */
+            'autopatch': false
         },
         'events': Object.values(LOG_LEVELS),
         'init': function(options) {
             this._super(options);
 
             var self = this;
+
 
             Object.keys(LOG_LEVELS).forEach(function(k) {
                 var v = LOG_LEVELS[k];
@@ -39,13 +47,27 @@
                     );
                 }
             });
+            if(self.option('autopatch', false) == true) {
+                window.console = self;
+            }
             return this;
+        },
+        /**
+         * Return the currently configured logger that you want to call. e.g. something different then window.console.
+         *
+         * @returns {*}
+         */
+        'get_logger': function() {
+            var self = this;
+            if(self.option('logger') == null) {
+                return window.console;
+            }
         },
         'log': function() {
             var self = this;
 
             if(self.option('enabled', false) == false) {
-                console.log("Logger is disabled.")
+                self.get_logger().log("Logger is disabled.")
                 return;
             }
             var args = [];
@@ -88,8 +110,13 @@
                     return;
                 }
             }
+            //cordova, android fix
+            if(window.location.toString().indexOf("android_asset") > -1) {
+                args = [args.join(", ")];
+            }
 
-            console[log_level].apply(console, args);
+            var l = self.get_logger();
+            l[log_level].apply(l, args);
         },
         'plugin_datetime': function(args) {
             var dt = new Date();
@@ -103,7 +130,7 @@
                 var stack = printStackTrace({
                     guess: true
                 });
-                var found_stack = stack[stack.length - 2];
+                var found_stack = stack[stack.length - 3];
                 caller = found_stack.replace(/^\s+at\s+/, "");
             } else {
                 caller = arguments.callee.caller.name;

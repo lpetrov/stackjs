@@ -68,7 +68,33 @@ window.Stack = window.Stack || {};
             this._ensure_data_is_loaded();
 
             var config = this;
+            var env_found = false;
 
+            // Detect by phonegap uuid (in case we are in phonegap env)
+            if(window.device != undefined && window.device.uuid != undefined) {
+                console.log("Detected PhoneGap env, searching if the current device is in the environments list: " + window.device.uuid);
+                jQuery.each(this._data['environments'], function(env_name, hosts) {
+                    var do_break = false;
+                    jQuery.each(hosts, function(k, possible_uuid) {
+                        if(possible_uuid.indexOf("uuid:") >= 0 && device.uuid == possible_uuid.replace("uuid:", "")) {
+                            env_found = true;
+                            config._env = env_name; //set env
+                            do_break = true;
+                            return false; //break
+                        }
+                    });
+
+                    return !do_break; // closure break..jquery's .each magic :(
+                });
+            } else {
+//                alert("no phonegap found");
+            }
+
+            if(env_found) {
+                return;
+            }
+
+            // Detect by host
             jQuery.each(this._data['environments'], function(env_name, hosts) {
                 var do_break = false;
                 jQuery.each(hosts, function(k, host) {

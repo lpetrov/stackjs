@@ -9,7 +9,9 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
 
 (function(Stack, $, undefined) {
     var BasePlugin = Stack.BaseComponent.extend({
+        //TODO: Name and allow_multiple... should be static!
         'name': 'jq_base',
+        'allow_multiple_instances': true,
         'element': null,
         'init': function(options) {
             if(options == undefined) {
@@ -43,7 +45,10 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
                  self.destroy_instance();
              }
              jQuery(self.element).removeData(self.name + "-obj");
-         }
+         },
+        'element_exists': function() {
+            return $('#' + this.element.attr('id')).size() > 0;
+        }
     });
     Stack.jQueryPlugins.BasePlugin = BasePlugin; //init
 
@@ -62,9 +67,10 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
                     return;
                 }
 
-
+                var is_new_instance = true;
                 if($this.data(name + "-obj")) {
                     instance = $this.data(name + "-obj");
+                    is_new_instance = false;
                 } else {
 
                 }
@@ -74,6 +80,10 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
                     return instance[ method ].apply( instance, Array.prototype.slice.call( arguments, 1 ));
                 } else if ( jQuery.isPlainObject(method) || ! method ) {
                     if($this.length == 1) {
+                        if(!is_new_instance && kls.prototype.allow_multiple_instances == false) { // halt
+                            console.warn(name + ": this plugin does not allow multiple instances.");
+                            return $this;
+                        }
 
                         //default settings impl.
 
