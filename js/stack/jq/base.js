@@ -45,6 +45,8 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
                  self.destroy_instance();
              }
              jQuery(self.element).removeData(self.name + "-obj");
+
+             this._super();
          },
         'element_exists': function() {
             return $('#' + this.element.attr('id')).size() > 0;

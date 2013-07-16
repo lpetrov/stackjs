@@ -45,6 +45,41 @@ window.Stack = window.Stack || {};
             args[0] = this.name + ":" + args[0];
             return $(this).bind.apply($(this), args);
         },
+        'is_bound': function(type, fn, dont_prefix) {
+            var events = this[jQuery.expando].events;
+            if(!dont_prefix) {
+                type = this.name + ":" + type;
+            }
+
+            if(!events || !events[type]) {
+                return false;
+            }
+
+            var data = events[type];
+
+
+            if (data === undefined || data.length === 0) {
+                return false;
+            }
+
+            var found = false;
+            $.each(data, function(k, v) {
+                if(v.handler.toString() == fn.toString()) {
+                    found = true;
+                    return false;
+                }
+            });
+
+            return found;
+        },
+        'bind_once': function(type, fn) {
+            var self = this;
+            if(!self.is_bound(type, fn)) {
+                self.bind(type, fn);
+            } else {
+//                console.log('will NOT bind, already bound:', type, fn);
+            }
+        },
         'trigger': function() {
             var args = Array.prototype.slice.call(arguments, 0);
 
@@ -103,6 +138,11 @@ window.Stack = window.Stack || {};
 //                console.log("Proxiying event: ", args);
                 self.trigger.apply(self, args);
             })
+        },
+        'destroy': function() {
+            $(this).unbind();
+            $(this).removeData();
+            delete this;
         }
     });
 
