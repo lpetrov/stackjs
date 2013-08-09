@@ -22,6 +22,7 @@ window.Stack = window.Stack || {};
             }
 
             this.options = $.extend(true, {}, this.defaults, Stack.Config.get(this.name), options);
+
             this.plugins = [];
 
             //TMI!
@@ -29,12 +30,12 @@ window.Stack = window.Stack || {};
         },
         'option': function(name, default_value) {
             if(name == undefined) {
-                return $.extend({}, this.options);
+                return $.extend(true, {}, this.options);
             }
 
             var result = get_value_from_array_path(this.options, name);
 
-            if(!result) {
+            if(typeof(result) == "undefined") {
                 return default_value;
             } else {
                 return result;
@@ -63,6 +64,7 @@ window.Stack = window.Stack || {};
             }
 
             var found = false;
+            //noinspection FunctionWithInconsistentReturnsJS
             $.each(data, function(k, v) {
                 if(v.handler.toString() == fn.toString()) {
                     found = true;
