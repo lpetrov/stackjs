@@ -3,6 +3,7 @@
         'name': 'tasklist',
         'allow_multiple_instances': true,
         'defaults': {
+            'defaultColor': '#333333'
         },
         /**
          * Defined in the same way as a Stack Component, but acts as a jQuery plugin.
@@ -71,6 +72,9 @@
 
             $element.delegate('.new', 'click', function(e) {
                 var $task = $('<div class="task" data-name="Untitled"></div>');
+
+                $task.data('color', self.option('defaultColor'));
+
                 $('.new', $element).before(
                     $task
                 );
