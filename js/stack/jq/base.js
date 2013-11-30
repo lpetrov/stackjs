@@ -46,8 +46,30 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
              }
              jQuery(self.element).removeData(self.name + "-obj");
 
+             jQuery(self.element).remove();
+
+             self.trigger('destroy');
              this._super();
          },
+        'data': function(k, v) {
+            var self = this;
+
+            if(v == undefined) {
+                return jQuery(self.element).data(k);
+            } else {
+                var r = jQuery(self.element).data(k, v);
+                self.trigger('change', [k, v]);
+
+                return r;
+            }
+        },
+        'removeData': function(k) {
+            var self = this;
+            var r = jQuery(self.element).removeData(k);
+            self.trigger('change', [k]);
+
+            return r;
+        },
         'element_exists': function() {
             return $('#' + this.element.attr('id')).size() > 0;
         }
@@ -84,6 +106,10 @@ Stack.jQueryPlugins = Stack.jQueryPlugins || {};
                     if($this.length == 1) {
                         if(!is_new_instance && kls.prototype.allow_multiple_instances == false) { // halt
                             console.warn(name + ": this plugin does not allow multiple instances.");
+                            if(kls.prototype.refresh_ui) {
+                                console.warn(name + ": calling refresh_ui instead.");
+                                $this[name]('get_instance').refresh_ui();
+                            }
                             return $this;
                         }
 
